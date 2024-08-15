@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using PasswordSaver.Configurations;
 using PasswordSaver.Entities;
 
 namespace PasswordSaver.Models
@@ -12,5 +13,11 @@ namespace PasswordSaver.Models
         }
         public DbSet<UserEntity> Users { get; set; }
 
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.ApplyConfiguration(new UserConfigurations());
+
+            base.OnModelCreating(modelBuilder);
+        }
     }
 }
