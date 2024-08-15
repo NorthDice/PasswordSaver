@@ -46,9 +46,6 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
-app.UseAuthentication();
-app.UseAuthorization();
-
 app.UseCookiePolicy(new CookiePolicyOptions
 {
     MinimumSameSitePolicy = SameSiteMode.Strict,
@@ -56,7 +53,13 @@ app.UseCookiePolicy(new CookiePolicyOptions
     Secure = CookieSecurePolicy.Always
 });
 
+app.UseAuthentication();
 app.UseAuthorization();
+
+app.MapGet("get", () =>
+{
+    return Results.Ok();
+}).RequireAuthorization("AdminPolicy");
 
 app.MapControllerRoute(
     name: "default",

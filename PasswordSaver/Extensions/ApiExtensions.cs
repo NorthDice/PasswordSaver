@@ -37,7 +37,13 @@ namespace PasswordSaver.Extensions
                     };
                 });
 
-            services.AddAuthorization();
+            services.AddAuthorization(option =>
+            {
+                option.AddPolicy("AdminPolicy", policy =>
+                {
+                    policy.RequireClaim("Admin", "true");
+                });
+            });
         }
     }
 }
