@@ -14,7 +14,7 @@ namespace PasswordSaver.Configurations
                 .WithMany(r => r.Users)
                 .UsingEntity<UserRoleEntity>(
                     l => l.HasOne<RoleEntity>().WithMany().HasForeignKey(r => r.RoleId),
-                    r => r.HasOne<RoleEntity>().WithMany().HasForeignKey(l => l.UserId));
+                    r => r.HasOne<UserEntity>().WithMany().HasForeignKey(l => l.UserId));
         }
     }
 }
