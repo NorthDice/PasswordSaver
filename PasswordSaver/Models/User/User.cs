@@ -1,4 +1,4 @@
-﻿namespace PasswordSaver.Models
+﻿namespace PasswordSaver.Models.User
 {
     public class User
     {
