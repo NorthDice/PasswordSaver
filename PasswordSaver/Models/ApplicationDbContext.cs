@@ -1,23 +1,24 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 using PasswordSaver.Configurations;
 using PasswordSaver.Entities;
+using PasswordSaver.Repositories;
+using System.Net;
 
 namespace PasswordSaver.Models
 {
-    public class ApplicationDbContext : DbContext
+    public class ApplicationDbContext(
+        DbContextOptions<ApplicationDbContext> options,
+        IOptions<AuthorizationOptions> authOptions) : DbContext (options)
     {
-        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
-            :base(options)
-        {
-            Database.EnsureCreated();
-        }
+        
         public DbSet<UserEntity> Users { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.ApplyConfiguration(new UserConfigurations());
 
-            base.OnModelCreating(modelBuilder);
+            modelBuilder.ApplyConfiguration(new RolePermissionConfiguration(authOptions.Value));
         }
     }
 }

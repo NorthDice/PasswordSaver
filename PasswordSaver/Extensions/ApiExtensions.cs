@@ -41,7 +41,7 @@ namespace PasswordSaver.Extensions
             {
                 option.AddPolicy("AdminPolicy", policy =>
                 {
-                    policy.RequireClaim("Admin", "true");
+                    policy.AddRequirements();
                 });
             });
         }

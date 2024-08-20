@@ -9,6 +9,11 @@ using PasswordSaver.Repositories;
 using PasswordSaver.Mapper;
 using System.Reflection;
 using Microsoft.AspNetCore.CookiePolicy;
+using PasswordSaver.Extensions;
+using Microsoft.Extensions.Options;
+using PasswordSaver.Authentification;
+using PasswordSaver.Entities;
+using PasswordSaver.Enums;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -16,10 +21,16 @@ builder.Services.AddAutoMapper(typeof(TestMapper));
 //builder.Services.AddScoped<UserService>();
 
 // Add services to the container.
+var services = builder.Services;
+var config = builder.Configuration;
+
+services.AddApiAuthentication(builder.Services.BuildServiceProvider().GetRequiredService<IOptions<JwtOptions>>());
+
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IPasswordHasher, PasswordHasher>();
 builder.Services.AddControllersWithViews();
 builder.Services.AddScoped<IJwtProvider, JwtProvider>();
+services.Configure<AuthorizationOptions>(config.GetSection(nameof(AuthorizationOptions)));
 //using (var scope = builder.Services.CreateScope())
 //{
 //    var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
@@ -59,7 +70,8 @@ app.UseAuthorization();
 app.MapGet("get", () =>
 {
     return Results.Ok();
-}).RequireAuthorization("AdminPolicy");
+}).RequireAuthorization(policy =>
+    policy.AddRequirements(new PermissionRequirement([Permissions.Read])));
 
 app.MapControllerRoute(
     name: "default",
