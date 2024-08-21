@@ -22,8 +22,7 @@ namespace PasswordSaver.Models.Provider
         {
             Claim[] claims =
             [
-                new("userId", user.Id.ToString()),
-                new("Admin", "true")
+                new(CustomClaims.UserId, user.Id.ToString()),
             ];
 
             var signingCredentials = new SigningCredentials(

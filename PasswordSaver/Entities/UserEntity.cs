@@ -11,5 +11,7 @@
         public string Email { get; set; }
 
         public ICollection<RoleEntity> Roles { get; set; }
+
+        public IEnumerable<PasswordEntity> Passwords { get; set; } 
     }
 }

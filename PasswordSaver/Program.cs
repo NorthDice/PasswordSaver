@@ -70,8 +70,7 @@ app.UseAuthorization();
 app.MapGet("get", () =>
 {
     return Results.Ok();
-}).RequireAuthorization(policy =>
-    policy.AddRequirements(new PermissionRequirement([Permissions.Read])));
+}).RequirePermissions(Permissions.Read);
 
 app.MapControllerRoute(
     name: "default",

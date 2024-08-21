@@ -1,4 +1,5 @@
-﻿using PasswordSaver.Models.User;
+﻿using PasswordSaver.Enums;
+using PasswordSaver.Models.User;
 
 namespace PasswordSaver.Interfaces
 {
@@ -6,5 +7,6 @@ namespace PasswordSaver.Interfaces
     {
         Task Add(User user);
         Task<User> GetByEmail(string email);
+        Task<HashSet<Permissions>> GetUserPermissions(Guid userId);
     }
 }

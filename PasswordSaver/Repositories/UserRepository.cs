@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using PasswordSaver.Entities;
+using PasswordSaver.Enums;
 using PasswordSaver.Interfaces;
 using PasswordSaver.Models;
 using PasswordSaver.Models.User;
@@ -23,6 +24,11 @@ namespace PasswordSaver.Repositories
 
         public async Task Add(User user)
         {
+            var roleEntity = await _context.Role
+                .SingleOrDefaultAsync(r => r.Id == (int)Role.User)
+                ?? throw new InvalidOperationException();
+
+
             var userEntity = new UserEntity()
             {
                 Id = user.Id,
@@ -42,6 +48,22 @@ namespace PasswordSaver.Repositories
                 .FirstOrDefaultAsync(u => u.Email == email) ?? throw new NotImplementedException();
 
             return _mapper.Map<User>(userEntity);
+        }
+
+        public async Task<HashSet<Permissions>> GetUserPermissions(Guid userId)
+        {
+            var roles = await _context.Users
+                .AsNoTracking()
+                .Include(u => u.Roles)
+                .ThenInclude(r => r.Permissions)
+                .Where(u => u.Id == userId)
+                .ToArrayAsync();
+
+            return roles
+                .SelectMany(r => r.Roles)
+                .SelectMany(r => r.Permissions)
+                .Select(p => (Permissions)p.Id)
+                .ToHashSet();
         }
     }
 }

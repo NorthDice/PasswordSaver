@@ -1,6 +1,9 @@
 ﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
+using PasswordSaver.Authentification;
+using PasswordSaver.Enums;
 using PasswordSaver.Models;
 using System.Text;
 
@@ -28,7 +31,7 @@ namespace PasswordSaver.Extensions
 
                     options.Events = new JwtBearerEvents()
                     {
-                        OnMessageReceived = context => 
+                        OnMessageReceived = context =>
                         {
                             context.Token = context.Request.Cookies["tasty-cookies"];
 
@@ -37,13 +40,18 @@ namespace PasswordSaver.Extensions
                     };
                 });
 
-            services.AddAuthorization(option =>
-            {
-                option.AddPolicy("AdminPolicy", policy =>
-                {
-                    policy.AddRequirements();
-                });
-            });
+            services.AddAuthorization();
+
+            services.AddSingleton<IAuthorizationHandler, PermissionAuthorizationHandler>();
+
+        }
+
+        public static IEndpointConventionBuilder RequirePermissions<TBuilder>(
+            this TBuilder builder, params Permissions[] permissions)
+            where TBuilder : IEndpointConventionBuilder
+        {
+            return builder.RequireAuthorization(policy => 
+            policy.AddRequirements(new PermissionRequirement(permissions)));
         }
     }
 }
