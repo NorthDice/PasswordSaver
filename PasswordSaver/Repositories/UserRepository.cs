@@ -50,6 +50,15 @@ namespace PasswordSaver.Repositories
             return _mapper.Map<User>(userEntity);
         }
 
+        public async Task<User> GetById(Guid userId)
+        {
+            var userEntity = await _context.Users
+                .AsNoTracking()
+                .FirstOrDefaultAsync(u => u.Id == userId) ?? throw new NotImplementedException();
+
+            return _mapper.Map<User>(userEntity);
+        }
+
         public async Task<HashSet<Permissions>> GetUserPermissions(Guid userId)
         {
             var roles = await _context.Users
