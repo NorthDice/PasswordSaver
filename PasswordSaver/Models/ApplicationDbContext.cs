@@ -14,6 +14,8 @@ namespace PasswordSaver.Models
         
         public DbSet<UserEntity> Users { get; set; }
 
+        public DbSet<RoleEntity> Roles { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.ApplyConfiguration(new UserConfigurations());

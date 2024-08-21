@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using PasswordSaver.Authentification;
+using PasswordSaver.Interfaces;
 
 namespace PasswordSaver.Models
 {
@@ -19,7 +20,7 @@ namespace PasswordSaver.Models
 
             if (userId == null || !Guid.TryParse(userId.Value, out var id)) 
             {
-                return Task.CompletedTask;
+                return;
             }
             
             using var scope = _serviceScopeFactory.CreateScope();

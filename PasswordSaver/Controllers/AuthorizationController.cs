@@ -5,12 +5,12 @@ using PasswordSaver.Models;
 
 namespace PasswordSaver.Controllers
 {
-    [Route("user")]
-    public class UserController : Controller
+    [Route("authorize")]
+    public class AuthorizationController : Controller
     {
         private readonly UserService _userService;
 
-        public UserController(UserService userService)
+        public AuthorizationController(UserService userService)
         {
             _userService = userService;
         }
@@ -24,15 +24,9 @@ namespace PasswordSaver.Controllers
         [HttpPost("register")]
         public async Task<IActionResult> Register(RegisterUserRequest request)
         {
-            //if (ModelState.IsValid)
-            //{
                
             await _userService.Register(request.Username, request.Email, request.Password);
-            return RedirectToAction("Login");
-                
-                
-            
-           
+            return RedirectToAction("Login");       
         }
 
         [HttpGet("login")]
