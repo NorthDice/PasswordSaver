@@ -40,9 +40,9 @@ namespace PasswordSaver.Controllers
             return View(model);
         }
 
-        public IActionResult SavedPasswords()
-        {
+        //public IActionResult SavedPasswords()
+        //{
 
-        }
+        //}
     }
 }

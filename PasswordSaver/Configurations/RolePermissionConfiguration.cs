@@ -34,5 +34,6 @@ namespace PasswordSaver.Configurations
                 }))
                 .ToArray();
         }
+
     }
 }

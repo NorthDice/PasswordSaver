@@ -21,9 +21,9 @@ namespace PasswordSaver.Models.Provider
         public string GenerateJwtToken(PasswordSaver.Models.User.User user)
         {
             Claim[] claims =
-            [
+            {
                 new(CustomClaims.UserId, user.Id.ToString()),
-            ];
+            };
 
             var signingCredentials = new SigningCredentials(
                 new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_options.SecretKey)),
@@ -31,8 +31,7 @@ namespace PasswordSaver.Models.Provider
 
             var token = new JwtSecurityToken(
                 claims: claims,
-                signingCredentials: signingCredentials,
-                expires: DateTime.UtcNow.AddDays(122));
+                signingCredentials: signingCredentials);
 
 
             var tokenValue = new JwtSecurityTokenHandler().WriteToken(token);

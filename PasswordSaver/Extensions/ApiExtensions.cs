@@ -26,7 +26,8 @@ namespace PasswordSaver.Extensions
                         ValidateLifetime = true,
                         ValidateIssuerSigningKey = true,
                         IssuerSigningKey = new SymmetricSecurityKey(
-                            Encoding.UTF8.GetBytes(jwtOptions.Value.SecretKey))
+                            Encoding.UTF8.GetBytes(jwtOptions.Value.SecretKey)),
+                        ClockSkew = TimeSpan.Zero
                     };
 
                     options.Events = new JwtBearerEvents()

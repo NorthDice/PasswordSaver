@@ -1,4 +1,7 @@
-﻿namespace PasswordSaver.Models.User
+﻿using System.ComponentModel.DataAnnotations.Schema;
+using System.ComponentModel.DataAnnotations;
+
+namespace PasswordSaver.Models.User
 {
     public class User
     {
@@ -10,7 +13,8 @@
             PasswordHash = passwordHash;
             Email = email;
         }
-
+        [Key]
+        [Column(TypeName = "uuid")]
         public Guid Id { get; set; }
         public string UserName { get; set; }
         public string PasswordHash { get; set; }

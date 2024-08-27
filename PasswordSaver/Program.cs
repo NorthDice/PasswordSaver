@@ -6,42 +6,41 @@ using PasswordSaver.Mapper;
 using PasswordSaver.Models;
 using PasswordSaver.Models.Provider;
 using PasswordSaver.Repositories;
-using PasswordSaver.Mapper;
-using System.Reflection;
-using Microsoft.AspNetCore.CookiePolicy;
 using PasswordSaver.Extensions;
 using Microsoft.Extensions.Options;
 using PasswordSaver.Authentification;
 using PasswordSaver.Entities;
 using PasswordSaver.Enums;
+using Microsoft.AspNetCore.CookiePolicy;
+using AutoMapper;
 
 var builder = WebApplication.CreateBuilder(args);
-
-builder.Services.AddAutoMapper(typeof(TestMapper));
-//builder.Services.AddScoped<UserService>();
 
 // Add services to the container.
 var services = builder.Services;
 var config = builder.Configuration;
 
+// Настройка JwtOptions
+services.Configure<JwtOptions>(builder.Configuration.GetSection("JwtOptions"));
 services.AddApiAuthentication(builder.Services.BuildServiceProvider().GetRequiredService<IOptions<JwtOptions>>());
 
-builder.Services.AddScoped<IUserRepository, UserRepository>();
-builder.Services.AddScoped<IPasswordHasher, PasswordHasher>();
-builder.Services.AddControllersWithViews();
-builder.Services.AddScoped<IJwtProvider, JwtProvider>();
-services.Configure<AuthorizationOptions>(config.GetSection(nameof(AuthorizationOptions)));
-//using (var scope = builder.Services.CreateScope())
-//{
-//    var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-//    dbContext.Database.Migrate();
-//}
 
+services.AddAutoMapper(typeof(TestMapper).Assembly);
+
+services.AddScoped<IUserRepository, UserRepository>();
+services.AddScoped<IPasswordHasher, PasswordHasher>();
+services.AddScoped<IJwtProvider, JwtProvider>();
+services.AddScoped<UserService>();
+
+// Добавление DbContext
 string connection = builder.Configuration.GetConnectionString("DefaultConnection");
-builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(connection));
+services.AddDbContext<ApplicationDbContext>(options => 
+    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-builder.Services.AddScoped<UserService>();
+// Конфигурация AuthorizationOptions
+services.Configure<AuthorizationOptions>(config.GetSection(nameof(AuthorizationOptions)));
 
+services.AddControllersWithViews();
 
 var app = builder.Build();
 

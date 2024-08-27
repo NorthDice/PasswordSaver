@@ -25,8 +25,9 @@ namespace PasswordSaver.Repositories
         public async Task Add(User user)
         {
             var roleEntity = await _context.Roles
-                .SingleOrDefaultAsync(r => r.Id == (int)Role.User)
-                ?? throw new InvalidOperationException();
+            .SingleOrDefaultAsync(r => r.Id == (int)Role.User)
+            ?? throw new InvalidOperationException("User role not found in the database.");
+
 
 
             var userEntity = new UserEntity()
