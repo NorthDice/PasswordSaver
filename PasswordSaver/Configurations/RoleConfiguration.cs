@@ -12,10 +12,20 @@ namespace PasswordSaver.Configurations
             builder.HasKey(r => r.Id);
 
             builder.HasMany(r => r.Permissions)
-                .WithMany(r => r.Roles)
+                .WithMany(p => p.Roles)
                 .UsingEntity<RolePermissionEntity>(
-                    l => l.HasOne<PermissionEntity>().WithMany().HasForeignKey(e => e.PermissionId),
-                    r => r.HasOne<RoleEntity>().WithMany().HasForeignKey(e => e.RoleId));
+                    j => j
+                        .HasOne(rp => rp.Permission)
+                        .WithMany()
+                        .HasForeignKey(rp => rp.PermissionId),
+                    j => j
+                        .HasOne(rp => rp.Role)
+                        .WithMany()
+                        .HasForeignKey(rp => rp.RoleId),
+                    j =>
+                    {
+                        j.HasKey(rp => new { rp.RoleId, rp.PermissionId });
+                    });
 
             var roles = Enum
                 .GetValues<Role>()

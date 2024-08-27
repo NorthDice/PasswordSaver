@@ -40,16 +40,13 @@ namespace PasswordSaver.Controllers
         {
             if (ModelState.IsValid)
             {
-                try
-                {
+                
                     var token = await _userService.Login(request.Email, request.Password);
                     Response.Cookies.Append("tasty-cookies", token);
                     return RedirectToAction("Index", "Home");
-                }
-                catch (Exception ex)
-                {
-                    ModelState.AddModelError("", ex.Message);
-                }
+                
+                    //ModelState.AddModelError("", ex.Message);
+                
             }
             return View(request);
         }

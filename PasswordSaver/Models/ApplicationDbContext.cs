@@ -20,7 +20,13 @@ namespace PasswordSaver.Models
         {
             modelBuilder.ApplyConfiguration(new UserConfigurations());
 
+            modelBuilder.ApplyConfiguration(new PermissionConfiguration());
+
             modelBuilder.ApplyConfiguration(new RolePermissionConfiguration(authOptions.Value));
+
+            modelBuilder.ApplyConfiguration(new RoleConfiguration());
+
+            base.OnModelCreating(modelBuilder);
         }
     }
 }
