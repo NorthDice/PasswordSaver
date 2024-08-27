@@ -25,7 +25,7 @@ namespace PasswordSaver.Controllers
         public async Task<IActionResult> Register(RegisterUserRequest request)
         {
                
-            await _userService.Register(request.Username, request.Email, request.Password);
+            await _userService.Register(request.Username, request.Password, request.Email);
             return RedirectToAction("Login");       
         }
 
