@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PasswordSaver.Interfaces;
+using PasswordSaver.Models;
 using PasswordSaver.Models.User;
 using System.Security.Claims;
 
@@ -8,6 +9,7 @@ namespace PasswordSaver.Controllers
 {
 
     [Authorize]
+    [Route("account")]
     public class AccountController : Controller
     {
         private readonly IUserRepository _userRepository;
@@ -17,9 +19,10 @@ namespace PasswordSaver.Controllers
             _userRepository = userRepository;
         }
 
+        [HttpGet("profile")]
         public async Task<IActionResult> Profile()
         {
-            var userIdClaim = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var userIdClaim = User.FindFirstValue(CustomClaims.UserId);
 
             if(userIdClaim == null || !Guid.TryParse(userIdClaim,out var userId))
             {

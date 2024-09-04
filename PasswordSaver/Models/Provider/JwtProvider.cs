@@ -23,6 +23,9 @@ namespace PasswordSaver.Models.Provider
             Claim[] claims =
             {
                 new(CustomClaims.UserId, user.Id.ToString()),
+                new Claim(ClaimTypes.Name, user.UserName), // Добавить имя пользователя
+                new Claim(ClaimTypes.Email, user.Email)   // Добавить email пользователя
+                //new Claim(ClaimTypes.Role, user.Role.ToString())
             };
 
             var signingCredentials = new SigningCredentials(
@@ -31,7 +34,9 @@ namespace PasswordSaver.Models.Provider
 
             var token = new JwtSecurityToken(
                 claims: claims,
-                signingCredentials: signingCredentials);
+                signingCredentials: signingCredentials,
+                expires: DateTime.UtcNow.AddHours(1)
+                );
 
 
             var tokenValue = new JwtSecurityTokenHandler().WriteToken(token);

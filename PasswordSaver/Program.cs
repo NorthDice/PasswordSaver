@@ -32,6 +32,13 @@ services.AddScoped<IPasswordHasher, PasswordHasher>();
 services.AddScoped<IJwtProvider, JwtProvider>();
 services.AddScoped<UserService>();
 
+
+services.AddLogging(logging =>
+{
+    logging.AddConsole();
+    logging.AddDebug();
+});
+
 // Добавление DbContext
 string connection = builder.Configuration.GetConnectionString("DefaultConnection");
 services.AddDbContext<ApplicationDbContext>(options => 

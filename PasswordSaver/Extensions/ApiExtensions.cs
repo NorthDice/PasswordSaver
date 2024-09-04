@@ -1,10 +1,12 @@
-﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+﻿using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using PasswordSaver.Authentification;
 using PasswordSaver.Enums;
 using PasswordSaver.Models;
+using System.Diagnostics;
 using System.Text;
 
 namespace PasswordSaver.Extensions
@@ -16,7 +18,11 @@ namespace PasswordSaver.Extensions
             IOptions<JwtOptions> jwtOptions)
         {
 
-            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).
+                services.AddAuthentication(options =>
+                {
+                    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+                }).
                 AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, options =>
                 {
                     options.TokenValidationParameters = new()
@@ -34,14 +40,29 @@ namespace PasswordSaver.Extensions
                     {
                         OnMessageReceived = context =>
                         {
-                            context.Token = context.Request.Cookies["tasty-cookies"];
-
+                            
+                            var token = context.Request.Cookies["tasty-cookies"];
+                            if (token != null)
+                            {
+                                context.Token = token;
+                            }
+                            return Task.CompletedTask;
+                        },
+                        OnAuthenticationFailed = context =>
+                        {
+                            
+                            Debug.WriteLine($"Authentication failed: {context.Exception.Message}");
                             return Task.CompletedTask;
                         }
                     };
                 });
 
-            services.AddAuthorization();
+            services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+                .AddCookie(options =>
+                {
+                    options.LoginPath = "/account/login"; // Путь к странице входа
+                    options.AccessDeniedPath = "/account/accessdenied"; // Путь при отказе в доступе
+                });
 
             services.AddSingleton<IAuthorizationHandler, PermissionAuthorizationHandler>();
 
