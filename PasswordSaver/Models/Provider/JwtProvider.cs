@@ -43,24 +43,5 @@ namespace PasswordSaver.Models.Provider
 
             return tokenValue;
         }
-
-        //public string GenerateToken(PasswordSaver.Models.User.User user)
-        //{
-        //    Claim[] claims = [new("userId", user.Id.ToString())];
-
-        //    var signingCredentials = new SigningCredentials(
-        //        new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_options.SecretKey)),
-        //        SecurityAlgorithms.HmacSha256);
-
-        //    var token = new JwtSecurityToken(
-        //        claims: claims,
-        //        signingCredentials: signingCredentials,
-        //        expires: DateTime.UtcNow.AddDays(122));
-
-
-        //    var tokenValue = new JwtSecurityTokenHandler().WriteToken(token);
-            
-        //    return tokenValue;
-        //}
     }
 }
